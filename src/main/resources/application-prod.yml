@@ -1,0 +1,11 @@
+spring:
+  # DataSource Config
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://47.115.205.29:3306/partner-matching
+    username: xiaoxu
+    password: X1665887032x
+  session:
+    timeout: 86400
+server:
+  address: 0.0.0.0

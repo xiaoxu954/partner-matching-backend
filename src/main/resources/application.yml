@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: partner-matching
+  # DataSource Config
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/partner-matching
+    username: root
+    password: 1234
+  #session????
+  session:
+    timeout: 86400
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDelete # ????????????(since 3.3.0,????????????2)
+      logic-delete-value: 1 # ??????(??? 1)
+      logic-not-delete-value: 0 # ??????(??? 0)
