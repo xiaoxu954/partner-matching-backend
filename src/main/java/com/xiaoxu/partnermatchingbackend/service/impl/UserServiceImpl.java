@@ -2,6 +2,8 @@ package com.xiaoxu.partnermatchingbackend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.xiaoxu.partnermatchingbackend.common.ErrorCode;
 import com.xiaoxu.partnermatchingbackend.exception.BusinessException;
 import com.xiaoxu.partnermatchingbackend.mapper.UserMapper;
@@ -16,6 +18,7 @@ import org.springframework.util.DigestUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -55,14 +58,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
         //1校验
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"参数为空");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
         if (userAccount.length() < 4) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"用户账户过短");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账户过短");
         }
         //密码不能超过八位
         if (userPassword.length() < 8 || checkPassword.length() < 8) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"用户密码过短");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短");
         }
 
         // 账户不能包含特殊字符
@@ -80,7 +83,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         queryWrapper.eq("userAccount", userAccount);
         long count = userMapper.selectCount(queryWrapper);
         if (count > 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"账号重复");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
         }
         // 2.加密
 
@@ -181,24 +184,71 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return 1;
     }
 
+
     /**
-     *   根据标签搜索用户。
-     * @param tagNameList  用户要搜索的标签
+     * 根据标签搜索用户。
+     *
+     * @param tagNameList 用户要搜索的标签
      * @return
      */
     @Override
-    public List<User> searchUsersByTags(List<String> tagNameList){
-        if (CollectionUtils.isEmpty(tagNameList)){
+    public List<User> searchUsersByTags(List<String> tagNameList) {
+        if (CollectionUtils.isEmpty(tagNameList)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+        return sqlSearch(tagNameList);   //先 sql query time = 5982 后 memory query time = 5606
+//        return memorySearch(tagNameList);    // 先 memory query time = 5938 后 sql query time = 5956 （清过缓存）
+    }
+
+    /**
+     * sql运行查询
+     *
+     * @param tagNameList
+     * @return
+     */
+    public List<User> sqlSearch(List<String> tagNameList) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        long starTime = System.currentTimeMillis();
         //拼接tag
         // like '%Java%' and like '%Python%'
         for (String tagList : tagNameList) {
             queryWrapper = queryWrapper.like("tags", tagList);
         }
         List<User> userList = userMapper.selectList(queryWrapper);
-        return  userList.stream().map(this::getSafetyUser).collect(Collectors.toList());
+        log.info("sql query time = " + (System.currentTimeMillis() - starTime));
+        return userList.stream().map(this::getSafetyUser).collect(Collectors.toList());
+    }
+
+    /**
+     * 查询，内存运行筛选
+     *
+     * @param tagNameList
+     * @return
+     */
+    public List<User> memorySearch(List<String> tagNameList) {
+
+        //1.先查询所有用户
+        QueryWrapper queryWrapper = new QueryWrapper<>();
+        long starTime = System.currentTimeMillis();
+        List<User> userList = userMapper.selectList(queryWrapper);
+        Gson gson = new Gson();
+        //2.判断内存中是否包含要求的标签
+        userList.stream().filter(user -> {
+            String tagstr = user.getTags();
+            if (StringUtils.isBlank(tagstr)) {
+                return false;
+            }
+            Set<String> tempTagNameSet = gson.fromJson(tagstr, new TypeToken<Set<String>>() {
+            }.getType());
+            for (String tagName : tagNameList) {
+                if (!tempTagNameSet.contains(tagName)) {
+                    return false;
+                }
+            }
+            return true;
+        }).map(this::getSafetyUser).collect(Collectors.toList());
+        log.info("memory query time = " + (System.currentTimeMillis() - starTime));
+        return userList;
     }
 
 }
