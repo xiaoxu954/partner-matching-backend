@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaoxu.partnermatchingbackend.model.domain.User;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author xujihong
@@ -43,5 +44,17 @@ public interface UserService extends IService<User> {
      */
     User getSafetyUser(User originUser);
 
+    /**
+     * 用户注销方法
+     * @param request
+     * @return
+     */
     int userLogout(HttpServletRequest request);
+
+    /**
+     * 根据标签搜索用户方法
+     * @param tagNameList
+     * @return
+     */
+    List<User> searchUsersByTags(List<String> tagNameList);
 }
