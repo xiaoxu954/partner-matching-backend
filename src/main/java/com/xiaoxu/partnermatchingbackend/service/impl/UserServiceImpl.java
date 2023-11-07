@@ -17,7 +17,9 @@ import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -184,9 +186,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return 1;
     }
 
-
     /**
-     * 根据标签搜索用户。
+     * 根据标签搜索用户。(内存过滤版)
      *
      * @param tagNameList 用户要搜索的标签
      * @return
@@ -196,50 +197,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (CollectionUtils.isEmpty(tagNameList)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        return sqlSearch(tagNameList);   //先 sql query time = 5982 后 memory query time = 5606
-//        return memorySearch(tagNameList);    // 先 memory query time = 5938 后 sql query time = 5956 （清过缓存）
-    }
-
-    /**
-     * sql运行查询
-     *
-     * @param tagNameList
-     * @return
-     */
-    public List<User> sqlSearch(List<String> tagNameList) {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        long starTime = System.currentTimeMillis();
-        //拼接tag
-        // like '%Java%' and like '%Python%'
-        for (String tagList : tagNameList) {
-            queryWrapper = queryWrapper.like("tags", tagList);
-        }
-        List<User> userList = userMapper.selectList(queryWrapper);
-        log.info("sql query time = " + (System.currentTimeMillis() - starTime));
-        return userList.stream().map(this::getSafetyUser).collect(Collectors.toList());
-    }
-
-    /**
-     * 查询，内存运行筛选
-     *
-     * @param tagNameList
-     * @return
-     */
-    public List<User> memorySearch(List<String> tagNameList) {
-
         //1.先查询所有用户
-        QueryWrapper queryWrapper = new QueryWrapper<>();
-        long starTime = System.currentTimeMillis();
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         List<User> userList = userMapper.selectList(queryWrapper);
         Gson gson = new Gson();
-        //2.判断内存中是否包含要求的标签
-        userList.stream().filter(user -> {
+        //2.判断内存中是否包含要求的标签 parallelStream()
+        return userList.stream().filter(user -> {
             String tagstr = user.getTags();
-            if (StringUtils.isBlank(tagstr)) {
-                return false;
-            }
+//            if (StringUtils.isBlank(tagstr)){
+//                return false;
+//            }
             Set<String> tempTagNameSet = gson.fromJson(tagstr, new TypeToken<Set<String>>() {
             }.getType());
+            //java8  Optional 来判断空
+            tempTagNameSet = Optional.ofNullable(tempTagNameSet).orElse(new HashSet<>());
+
             for (String tagName : tagNameList) {
                 if (!tempTagNameSet.contains(tagName)) {
                     return false;
@@ -247,8 +219,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             }
             return true;
         }).map(this::getSafetyUser).collect(Collectors.toList());
-        log.info("memory query time = " + (System.currentTimeMillis() - starTime));
-        return userList;
+    }
+
+
+    /**
+     * 根据标签搜索用户。(sql查询版)
+     *
+     * @param tagNameList 用户要搜索的标签
+     * @return
+     * @Deprecated 过时
+     */
+    @Deprecated
+    private List<User> searchUsersByTagBySQL(List<String> tagNameList) {
+        if (CollectionUtils.isEmpty(tagNameList)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        //拼接tag
+        // like '%Java%' and like '%Python%'
+        for (String tagList : tagNameList) {
+            queryWrapper = queryWrapper.like("tags", tagList);
+        }
+        List<User> userList = userMapper.selectList(queryWrapper);
+        return userList.stream().map(this::getSafetyUser).collect(Collectors.toList());
     }
 
 }
