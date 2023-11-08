@@ -10,6 +10,7 @@ import com.xiaoxu.partnermatchingbackend.model.domain.request.UserLoginRequest;
 import com.xiaoxu.partnermatchingbackend.model.domain.request.UserRegisterRequest;
 import com.xiaoxu.partnermatchingbackend.model.domain.User;
 import com.xiaoxu.partnermatchingbackend.service.UserService;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,4 +1,12 @@
 spring:
+  #swagger2 Config
+  #springboot version >= 2.6
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  #指定选择的运行环境
+  profiles:
+    active: dev
   application:
     name: partner-matching
   # DataSource Config
@@ -7,7 +15,7 @@ spring:
     url: jdbc:mysql://localhost:3306/partner-matching
     username: root
     password: 1234
-  #session????
+  #session timeout session超时
   session:
     timeout: 86400
 server:
@@ -20,6 +28,6 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
-      logic-delete-field: isDelete # ????????????(since 3.3.0,????????????2)
-      logic-delete-value: 1 # ??????(??? 1)
-      logic-not-delete-value: 0 # ??????(??? 0)
+      logic-delete-field: isDelete # logic deleted entity names 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+      logic-delete-value: 1 # Logic deleted (default 1)逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # Logic not deleted (default 0) 逻辑未删除值(默认为 0)
