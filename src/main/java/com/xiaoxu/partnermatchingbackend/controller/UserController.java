@@ -12,6 +12,7 @@ import com.xiaoxu.partnermatchingbackend.model.domain.User;
 import com.xiaoxu.partnermatchingbackend.service.UserService;
 import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -134,6 +135,16 @@ public class UserController {
         }
         int result = userService.userLogout(request);
         return ResultUtil.success(result);
+    }
+
+    @GetMapping("/search/tags")
+    public BaseResponse<List<User>> searchUsersByTags(@RequestParam(required = false) List<String> tagsNameList) {
+        if (CollectionUtils.isEmpty(tagsNameList)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        List<User> userList = userService.searchUsersByTags(tagsNameList);
+        return ResultUtil.success(userList);
+
     }
 }
 
