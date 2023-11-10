@@ -25,6 +25,4 @@ public class GlobalExceptionHandler {
         log.error("runtimeException", e);
         return ResultUtil.error(ErrorCode.SYSTEM_ERROR, e.getMessage(), "");
     }
-
-
 }
