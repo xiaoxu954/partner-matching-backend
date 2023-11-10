@@ -46,6 +46,7 @@ public interface UserService extends IService<User> {
 
     /**
      * 用户注销方法
+     *
      * @param request
      * @return
      */
@@ -53,8 +54,42 @@ public interface UserService extends IService<User> {
 
     /**
      * 根据标签搜索用户方法
+     *
      * @param tagNameList
      * @return
      */
     List<User> searchUsersByTags(List<String> tagNameList);
+
+    /**
+     * 用户信息修改
+     *
+     * @param user
+     * @param loginuser
+     * @return
+     */
+    int updateUser(User user, User loginuser);
+
+    /**
+     * 获取当前用户
+     *
+     * @param request
+     * @return
+     */
+    User getLoginUser(HttpServletRequest request);
+
+    /**
+     * 是否为管理员
+     *
+     * @param request
+     * @return
+     */
+    boolean isAdmin(HttpServletRequest request);
+
+    /**
+     * 是否为管理员
+     *
+     * @param user
+     * @return
+     */
+    boolean isAdmin(User user);
 }

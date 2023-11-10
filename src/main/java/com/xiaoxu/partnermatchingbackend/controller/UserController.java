@@ -29,6 +29,7 @@ import static com.xiaoxu.partnermatchingbackend.constant.UserConstant.USER_LOGIN
  */
 @RestController
 @RequestMapping("/user")
+//@CrossOrigin(allowCredentials = "true",origins = {"http://127.0.0.1:3000"}) //跨域
 public class UserController {
 
     @Resource
@@ -70,7 +71,7 @@ public class UserController {
     //查询
     @GetMapping("/search")
     public BaseResponse<List<User>> searchUsers(String username, HttpServletRequest request) {
-        if (!isAdmin(request)) {
+        if (!userService.isAdmin(request)) {
             throw new BusinessException(ErrorCode.NO_AUTH);
         }
 
@@ -87,7 +88,7 @@ public class UserController {
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
         //仅管理员删除
-        if (isAdmin(request)) {
+        if (!userService.isAdmin(request)) {
             throw new BusinessException(ErrorCode.NO_AUTH);
         }
         if (id < 0) {
@@ -98,14 +99,6 @@ public class UserController {
 
     }
 
-    private boolean isAdmin(HttpServletRequest request) {
-        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
-        User user = (User) userObj;
-        if (user == null || user.getUserRole() != ADMIN_ROLE) {
-            return false;
-        }
-        return true;
-    }
 
     /**
      * 获取当前用户
@@ -144,7 +137,18 @@ public class UserController {
         }
         List<User> userList = userService.searchUsersByTags(tagsNameList);
         return ResultUtil.success(userList);
+    }
 
+    @PostMapping("/update")
+    public BaseResponse<Integer> updateUser(@RequestBody User user, HttpServletRequest request) {
+        //验证参数是否为空
+        if (user == null) {
+            throw new BusinessException(ErrorCode.NULL_ERROR);
+        }
+        //鉴权
+        User loginUser = userService.getLoginUser(request);
+        int result = userService.updateUser(user, loginUser);
+        return ResultUtil.success(result);
     }
 }
 
