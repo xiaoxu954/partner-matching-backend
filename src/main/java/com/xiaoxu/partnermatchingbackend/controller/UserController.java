@@ -4,24 +4,21 @@ package com.xiaoxu.partnermatchingbackend.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xiaoxu.partnermatchingbackend.common.BaseResponse;
 import com.xiaoxu.partnermatchingbackend.common.ErrorCode;
-import com.xiaoxu.partnermatchingbackend.common.ResultUtil;
+import com.xiaoxu.partnermatchingbackend.common.ResultUtils;
 import com.xiaoxu.partnermatchingbackend.exception.BusinessException;
-import com.xiaoxu.partnermatchingbackend.model.domain.request.UserLoginRequest;
-import com.xiaoxu.partnermatchingbackend.model.domain.request.UserRegisterRequest;
 import com.xiaoxu.partnermatchingbackend.model.domain.User;
+import com.xiaoxu.partnermatchingbackend.model.request.UserLoginRequest;
+import com.xiaoxu.partnermatchingbackend.model.request.UserRegisterRequest;
 import com.xiaoxu.partnermatchingbackend.service.UserService;
-import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.xiaoxu.partnermatchingbackend.constant.UserConstant.ADMIN_ROLE;
 import static com.xiaoxu.partnermatchingbackend.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
@@ -47,7 +44,7 @@ public class UserController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         Long result = userService.userRegister(userAccount, userPassword, checkPassword);
-        return ResultUtil.success(result);
+        return ResultUtils.success(result);
     }
 
     @PostMapping("/login")
@@ -64,9 +61,8 @@ public class UserController {
 
         }
         User user = userService.userLogin(userAccount, userPassword, request);
-        return ResultUtil.success(user);
+        return ResultUtils.success(user);
     }
-
 
     //查询
     @GetMapping("/search")
@@ -82,9 +78,10 @@ public class UserController {
         }
         List<User> userList = userService.list(queryWrapper);
         List<User> list = userList.stream().map(user -> userService.getSafetyUser(user)).collect(Collectors.toList());
-        return ResultUtil.success(list);
+        return ResultUtils.success(list);
     }
 
+    //删除用户
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
         //仅管理员删除
@@ -95,7 +92,7 @@ public class UserController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         boolean result = userService.removeById(id);
-        return ResultUtil.success(result);
+        return ResultUtils.success(result);
 
     }
 
@@ -107,19 +104,21 @@ public class UserController {
      * @return
      */
     @GetMapping("/current")
-    public BaseResponse<User> getCurrent(HttpServletRequest request) {
+    public BaseResponse<User> getCurrentUser(HttpServletRequest request) {
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
         if (currentUser == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+            throw new BusinessException(ErrorCode.NOT_LOGIN);
         }
         long userId = currentUser.getId();
-        //TODO:  校验用户是否合法
+        // TODO 校验用户是否合法
         User user = userService.getById(userId);
         User safeUser = userService.getSafetyUser(user);
-        return ResultUtil.success(safeUser);
+        return ResultUtils.success(safeUser);
     }
 
+
+    //注销用户
     @PostMapping("/logout")
     public BaseResponse<Integer> userLogout(HttpServletRequest request) {
 
@@ -127,16 +126,17 @@ public class UserController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         int result = userService.userLogout(request);
-        return ResultUtil.success(result);
+        return ResultUtils.success(result);
     }
 
+    //根据标签查询用户
     @GetMapping("/search/tags")
-    public BaseResponse<List<User>> searchUsersByTags(@RequestParam(required = false) List<String> tagsNameList) {
-        if (CollectionUtils.isEmpty(tagsNameList)) {
+    public BaseResponse<List<User>> searchUsersByTags(@RequestParam(required = false) List<String> tagNameList) {
+        if (CollectionUtils.isEmpty(tagNameList)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        List<User> userList = userService.searchUsersByTags(tagsNameList);
-        return ResultUtil.success(userList);
+        List<User> userList = userService.searchUsersByTags(tagNameList);
+        return ResultUtils.success(userList);
     }
 
     @PostMapping("/update")
@@ -148,7 +148,10 @@ public class UserController {
         //鉴权
         User loginUser = userService.getLoginUser(request);
         int result = userService.updateUser(user, loginUser);
-        return ResultUtil.success(result);
+        return ResultUtils.success(result);
     }
+
+
+
 }
 
