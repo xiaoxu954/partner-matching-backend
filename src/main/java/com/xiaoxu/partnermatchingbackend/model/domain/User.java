@@ -18,12 +18,7 @@ public class User implements Serializable {
      *
      */
     @TableId(type = IdType.AUTO)
-    private long id;
-
-    /**
-     * 账号
-     */
-    private String userAccount;
+    private Long id;
 
     /**
      * 用户昵称
@@ -31,9 +26,9 @@ public class User implements Serializable {
     private String username;
 
     /**
-     * 性别
+     * 账号
      */
-    private Integer gender;
+    private String userAccount;
 
     /**
      * 用户头像
@@ -41,14 +36,14 @@ public class User implements Serializable {
     private String avatarUrl;
 
     /**
+     * 性别
+     */
+    private Integer gender;
+
+    /**
      * 密码
      */
     private String userPassword;
-
-    /**
-     * 个人简介
-     */
-    private String profile;
 
     /**
      * 邮箱
@@ -90,6 +85,7 @@ public class User implements Serializable {
      * 标签列表
      */
     private String tags;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
