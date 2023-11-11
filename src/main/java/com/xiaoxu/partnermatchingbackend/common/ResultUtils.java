@@ -1,6 +1,6 @@
 package com.xiaoxu.partnermatchingbackend.common;
 
-public class ResultUtil {
+public class ResultUtils {
     /**
      * 成功
      *
