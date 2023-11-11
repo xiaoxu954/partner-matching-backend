@@ -28,16 +28,15 @@ public interface UserService extends IService<User> {
     /**
      * 用户登录
      *
-     * @param userAccount
-     * @param userPassword
+     * @param userAccount  用户账户
+     * @param userPassword 用户密码
      * @param request
-     * @return
+     * @return 脱敏后的用户信息
      */
     User userLogin(String userAccount, String userPassword, HttpServletRequest request);
 
-
     /**
-     * 用户脱敏方法
+     * 用户脱敏
      *
      * @param originUser
      * @return
@@ -45,7 +44,7 @@ public interface UserService extends IService<User> {
     User getSafetyUser(User originUser);
 
     /**
-     * 用户注销方法
+     * 用户注销
      *
      * @param request
      * @return
@@ -53,7 +52,7 @@ public interface UserService extends IService<User> {
     int userLogout(HttpServletRequest request);
 
     /**
-     * 根据标签搜索用户方法
+     * 根据标签搜索用户
      *
      * @param tagNameList
      * @return
@@ -61,18 +60,16 @@ public interface UserService extends IService<User> {
     List<User> searchUsersByTags(List<String> tagNameList);
 
     /**
-     * 用户信息修改
+     * 更新用户信息
      *
      * @param user
-     * @param loginuser
      * @return
      */
-    int updateUser(User user, User loginuser);
+    int updateUser(User user, User loginUser);
 
     /**
-     * 获取当前用户
+     * 获取当前登录用户信息
      *
-     * @param request
      * @return
      */
     User getLoginUser(HttpServletRequest request);
@@ -88,8 +85,8 @@ public interface UserService extends IService<User> {
     /**
      * 是否为管理员
      *
-     * @param user
+     * @param loginUser
      * @return
      */
-    boolean isAdmin(User user);
+    boolean isAdmin(User loginUser);
 }

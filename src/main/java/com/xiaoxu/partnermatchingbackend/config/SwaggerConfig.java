@@ -23,7 +23,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @Configuration // 配置类
 @EnableSwagger2 // 开启 swagger2 的自动配置
-@Profile({"dev","test"}) //版本控制访问
+//@Profile({"dev","test"}) //版本控制访问
 public class SwaggerConfig  {
     @Bean
     public Docket docket() {
@@ -61,11 +61,11 @@ public class SwaggerConfig  {
                 .version("1.0") // 版本
                 .license("Swagger-的使用(详细教程)").licenseUrl("https://blog.csdn.net/xhmico/article/details/125353535").contact(contact).build();
     }
-    /**
-     * 解决高版本springboot无法访问http://localhost:8080/swagger-ui.html
-     *
-     * @param registry void
-     */
+//    /**
+//     * 解决高版本springboot无法访问http://localhost:8080/swagger-ui.html
+//     *
+//     * @param registry void
+//     */
 //    @Override
 //    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
 //        // 解决静态资源无法访问

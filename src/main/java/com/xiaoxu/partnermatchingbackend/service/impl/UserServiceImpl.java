@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xiaoxu.partnermatchingbackend.common.ErrorCode;
+import com.xiaoxu.partnermatchingbackend.constant.UserConstant;
 import com.xiaoxu.partnermatchingbackend.exception.BusinessException;
 import com.xiaoxu.partnermatchingbackend.mapper.UserMapper;
 import com.xiaoxu.partnermatchingbackend.model.domain.User;
@@ -165,6 +166,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         safetyUser.setGender(originUser.getGender());
         safetyUser.setPhone(originUser.getPhone());
         safetyUser.setEmail(originUser.getEmail());
+        safetyUser.setProfile(originUser.getProfile());
         safetyUser.setUserRole(originUser.getUserRole());
         safetyUser.setUserStatus(originUser.getUserStatus());
         safetyUser.setCreateTime(originUser.getCreateTime());
@@ -243,18 +245,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
 
-    /**
-     *  获取当前用户信息
-     * @param request
-     * @return
-     */
     @Override
     public User getLoginUser(HttpServletRequest request) {
-        if (request == null){
+        if (request == null) {
             return null;
         }
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
-        if (userObj == null){
+        if (userObj == null) {
             throw new BusinessException(ErrorCode.NO_AUTH);
         }
         return (User) userObj;
@@ -266,11 +263,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * @param request
      * @return
      */
+    @Override
     public boolean isAdmin(HttpServletRequest request) {
         // 仅管理员可查询
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User user = (User) userObj;
-        return user != null && user.getUserRole() == ADMIN_ROLE;
+        return user != null && user.getUserRole() == UserConstant.ADMIN_ROLE;
     }
 
     /**
@@ -279,8 +277,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * @param loginUser
      * @return
      */
+    @Override
     public boolean isAdmin(User loginUser) {
-        return loginUser != null && loginUser.getUserRole() == ADMIN_ROLE;
+        return loginUser != null && loginUser.getUserRole() == UserConstant.ADMIN_ROLE;
     }
 
 

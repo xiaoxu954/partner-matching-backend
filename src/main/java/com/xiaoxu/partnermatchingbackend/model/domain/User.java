@@ -49,6 +49,10 @@ public class User implements Serializable {
      * 邮箱
      */
     private String email;
+    /**
+     * 自我介绍
+     */
+    private String profile;
 
     /**
      * 状态 0-正常

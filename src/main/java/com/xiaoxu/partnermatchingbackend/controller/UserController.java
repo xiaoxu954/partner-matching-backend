@@ -26,7 +26,7 @@ import static com.xiaoxu.partnermatchingbackend.constant.UserConstant.USER_LOGIN
  */
 @RestController
 @RequestMapping("/user")
-//@CrossOrigin(allowCredentials = "true",origins = {"http://127.0.0.1:3000"}) //跨域
+//@CrossOrigin(allowCredentials  = "true",origins = {"http://127.0.0.1:3000"}) //跨域
 public class UserController {
 
     @Resource
@@ -64,22 +64,6 @@ public class UserController {
         return ResultUtils.success(user);
     }
 
-    //查询
-    @GetMapping("/search")
-    public BaseResponse<List<User>> searchUsers(String username, HttpServletRequest request) {
-        if (!userService.isAdmin(request)) {
-            throw new BusinessException(ErrorCode.NO_AUTH);
-        }
-
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        if (StringUtils.isNotBlank(username)) {
-            queryWrapper.like("username", username);
-
-        }
-        List<User> userList = userService.list(queryWrapper);
-        List<User> list = userList.stream().map(user -> userService.getSafetyUser(user)).collect(Collectors.toList());
-        return ResultUtils.success(list);
-    }
 
     //删除用户
     @PostMapping("/delete")
@@ -103,6 +87,7 @@ public class UserController {
      * @param request
      * @return
      */
+
     @GetMapping("/current")
     public BaseResponse<User> getCurrentUser(HttpServletRequest request) {
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
@@ -113,10 +98,9 @@ public class UserController {
         long userId = currentUser.getId();
         // TODO 校验用户是否合法
         User user = userService.getById(userId);
-        User safeUser = userService.getSafetyUser(user);
-        return ResultUtils.success(safeUser);
+        User safetyUser = userService.getSafetyUser(user);
+        return ResultUtils.success(safetyUser);
     }
-
 
     //注销用户
     @PostMapping("/logout")
@@ -129,6 +113,19 @@ public class UserController {
         return ResultUtils.success(result);
     }
 
+    @GetMapping("/search")
+    public BaseResponse<List<User>> searchUsers(String username, HttpServletRequest request) {
+        if (!userService.isAdmin(request)) {
+            throw new BusinessException(ErrorCode.NO_AUTH);
+        }
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        if (StringUtils.isNotBlank(username)) {
+            queryWrapper.like("username", username);
+        }
+        List<User> userList = userService.list(queryWrapper);
+        List<User> list = userList.stream().map(user -> userService.getSafetyUser(user)).collect(Collectors.toList());
+        return ResultUtils.success(list);
+    }
     //根据标签查询用户
     @GetMapping("/search/tags")
     public BaseResponse<List<User>> searchUsersByTags(@RequestParam(required = false) List<String> tagNameList) {

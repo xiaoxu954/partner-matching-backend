@@ -5,8 +5,8 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
   #指定选择的运行环境
-  profiles:
-    active: dev
+#  profiles:
+#    active: dev
   application:
     name: partner-matching
   # DataSource Config
@@ -32,8 +32,8 @@ server:
     session:
       cookie: #规定可以携带cookie的域名
         domain: localhost
-        same-site: none #让浏览器保存cookie
-        secure: true
+        same-site: lax
+        secure: false # http协议
 
 mybatis-plus:
   configuration:
