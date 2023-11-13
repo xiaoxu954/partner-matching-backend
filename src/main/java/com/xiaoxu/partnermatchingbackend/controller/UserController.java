@@ -2,6 +2,7 @@ package com.xiaoxu.partnermatchingbackend.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaoxu.partnermatchingbackend.common.BaseResponse;
 import com.xiaoxu.partnermatchingbackend.common.ErrorCode;
 import com.xiaoxu.partnermatchingbackend.common.ResultUtils;
@@ -150,12 +151,19 @@ public class UserController {
     }
 
 
+    /**
+     * 推荐页面
+     *
+     * @param pageSize
+     * @param pageNum
+     * @param request
+     * @return
+     */
     @GetMapping("/recommend")
-    public BaseResponse<List<User>> recommendUsers(HttpServletRequest request) {
+    public BaseResponse<Page<User>> recommendUsers(long pageSize, long pageNum, HttpServletRequest request) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        List<User> userList = userService.list(queryWrapper);
-        List<User> list = userList.stream().map(user -> userService.getSafetyUser(user)).collect(Collectors.toList());
-        return ResultUtils.success(list);
+        Page<User> userList = userService.page(new Page<>(pageNum, pageSize), queryWrapper);
+        return ResultUtils.success(userList);
     }
 
 
