@@ -23,7 +23,7 @@ spring:
   redis:
     port: 6379 #端口
     host: localhost #地址 这里用本地
-    database: 0 #用哪一个db库
+    database: 1 #用哪一个db库
 
 server:
   port: 8080
