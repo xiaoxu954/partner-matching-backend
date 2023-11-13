@@ -52,13 +52,15 @@ public class RedisTest {
     //改
     @Test
     void testUpdate() {
-
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        valueOperations.set("xiaoxuString", "changerxiaoxuString");
     }
 
     //删
     @Test
     void testDelete() {
-
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        valueOperations.getAndDelete("xiaoxuString");
     }
 
 }

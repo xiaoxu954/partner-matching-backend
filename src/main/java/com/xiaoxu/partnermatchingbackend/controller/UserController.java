@@ -182,13 +182,12 @@ public class UserController {
         userPage = userService.page(new Page<>(pageNum, pageSize), queryWrapper);
         // 写缓存
         try {
-            valueOperations.set(redisKey, userPage, 300000, TimeUnit.MILLISECONDS);
+            valueOperations.set(redisKey, userPage, 30000, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             log.error("redis set key error", e);
         }
         return ResultUtils.success(userPage);
     }
-
 
 
 }

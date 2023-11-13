@@ -78,7 +78,12 @@
             <artifactId>spring-session-data-redis</artifactId>
             <version>2.7.1</version>
         </dependency>
-
+        <!--https://github.com/redisson/redisson#quick-start-->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>3.24.3</version>
+        </dependency>
         <!-- swagger 接口文档 -->
         <dependency>
             <groupId>io.springfox</groupId>
