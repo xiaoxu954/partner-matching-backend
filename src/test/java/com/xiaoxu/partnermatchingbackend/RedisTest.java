@@ -1,9 +1,6 @@
 package com.xiaoxu.partnermatchingbackend;
 
-import java.util.Date;
-
 import com.xiaoxu.partnermatchingbackend.model.domain.User;
-import jdk.nashorn.internal.ir.CallNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

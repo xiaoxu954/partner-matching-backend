@@ -42,6 +42,7 @@ public class RedissonTest {
 
         RMap<Object, Object> map1 = redissonClient.getMap("test-map");
         map1.put("xiaoxu",10);
+        map1.remove("xiaoxu");
 
 
 
