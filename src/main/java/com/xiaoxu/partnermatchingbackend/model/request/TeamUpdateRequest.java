@@ -1,24 +1,21 @@
-package com.xiaoxu.partnermatchingbackend.model.domain;
+package com.xiaoxu.partnermatchingbackend.model.request;
 
-import com.baomidou.mybatisplus.annotation.*;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
- * 队伍
- * @TableName team
+ * 队伍更新请求体
  */
-@TableName(value ="team")
 @Data
-public class Team implements Serializable {
+public class TeamUpdateRequest implements Serializable {
+
+    private static final long serialVersionUID = -4101859946250812172L;
     /**
      * id
      */
-    @TableId(type = IdType.AUTO)
     private Long id;
-
     /**
      * 队伍名称
      */
@@ -54,22 +51,5 @@ public class Team implements Serializable {
      */
     private String password;
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
 
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
-
-    /**
-     * 是否删除
-     */
-    @TableLogic
-    private Integer isDelete;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
 }

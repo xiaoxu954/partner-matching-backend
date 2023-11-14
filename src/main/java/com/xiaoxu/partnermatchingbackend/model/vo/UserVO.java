@@ -1,23 +1,20 @@
-package com.xiaoxu.partnermatchingbackend.model.domain;
+package com.xiaoxu.partnermatchingbackend.model.vo;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 用户表
- *
- * @TableName user
+ * 用户包装类（脱敏）
  */
-@TableName(value = "user")
 @Data
-public class    User implements Serializable {
+public class UserVO implements Serializable {
+    private static final long serialVersionUID = 5453449980441542452L;
     /**
-     *
+     * id
      */
-    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
@@ -41,28 +38,21 @@ public class    User implements Serializable {
     private Integer gender;
 
     /**
-     * 密码
+     * 电话
      */
-    private String userPassword;
+    private String phone;
+
 
     /**
      * 邮箱
      */
     private String email;
-    /**
-     * 自我介绍
-     */
-    private String profile;
 
     /**
      * 状态 0-正常
      */
     private Integer userStatus;
 
-    /**
-     * 电话
-     */
-    private String phone;
 
     /**
      * 创建时间
@@ -81,7 +71,7 @@ public class    User implements Serializable {
     private Integer isDelete;
 
     /**
-     * 0-普通用户  1-管理员
+     * 用户角色  0-普通用户  1-管理员
      */
     private Integer userRole;
 
@@ -90,7 +80,4 @@ public class    User implements Serializable {
      */
     private String tags;
 
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
 }
