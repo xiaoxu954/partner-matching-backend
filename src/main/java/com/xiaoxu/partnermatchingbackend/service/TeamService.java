@@ -4,6 +4,7 @@ import com.xiaoxu.partnermatchingbackend.model.domain.Team;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaoxu.partnermatchingbackend.model.domain.User;
 import com.xiaoxu.partnermatchingbackend.model.dto.TeamQuery;
+import com.xiaoxu.partnermatchingbackend.model.request.TeamJoinRequest;
 import com.xiaoxu.partnermatchingbackend.model.request.TeamUpdateRequest;
 import com.xiaoxu.partnermatchingbackend.model.vo.TeamUserVO;
 
@@ -39,4 +40,11 @@ public interface TeamService extends IService<Team> {
      * @return
      */
     boolean updateTeam(TeamUpdateRequest teamUpdateRequest,User loginUser);
+
+    /**
+     * 加入队伍
+     * @param teamJoinRequest
+     * @return
+     */
+    boolean joinTeam(TeamJoinRequest teamJoinRequest,User loginUser);
 }

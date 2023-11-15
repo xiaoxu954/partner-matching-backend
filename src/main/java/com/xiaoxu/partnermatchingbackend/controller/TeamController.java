@@ -10,6 +10,7 @@ import com.xiaoxu.partnermatchingbackend.model.domain.Team;
 import com.xiaoxu.partnermatchingbackend.model.domain.User;
 import com.xiaoxu.partnermatchingbackend.model.dto.TeamQuery;
 import com.xiaoxu.partnermatchingbackend.model.request.TeamAddRequest;
+import com.xiaoxu.partnermatchingbackend.model.request.TeamJoinRequest;
 import com.xiaoxu.partnermatchingbackend.model.request.TeamUpdateRequest;
 import com.xiaoxu.partnermatchingbackend.model.vo.TeamUserVO;
 import com.xiaoxu.partnermatchingbackend.service.TeamService;
@@ -109,4 +110,15 @@ public class TeamController {
         return ResultUtils.success(resultPage);
     }
 
+
+    @PostMapping("/join")
+    public BaseResponse<Boolean> joinTeam(@RequestBody TeamJoinRequest teamJoinRequest, HttpServletRequest request) {
+        if (teamJoinRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        boolean result = teamService.joinTeam(teamJoinRequest, loginUser);
+        return ResultUtils.success(result);
+
+    }
 }
