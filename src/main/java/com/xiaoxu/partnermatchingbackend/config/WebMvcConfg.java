@@ -17,7 +17,7 @@ public class WebMvcConfg implements WebMvcConfigurer {
                 //设置允许跨域请求的域名
                 //当**Credentials为true时，**Origin不能为星号，需为具体的ip地址【如果接口不带cookie,ip无需设成具体ip】
                 //具体为前端的ip地址
-                .allowedOrigins("http://localhost:3000", "http://127.0.0.1:3000", "http://127.0.0.1:8080", "http://127.0.0.1:8083")
+                .allowedOrigins("http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:3001", "http://127.0.0.1:3001")
                 //是否允许证书 允许携带凭证（cookie） 不再默认开启
                 .allowCredentials(true)
                 //设置允许的方法

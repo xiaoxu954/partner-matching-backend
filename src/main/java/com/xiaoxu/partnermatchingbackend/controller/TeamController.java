@@ -8,6 +8,7 @@ import com.xiaoxu.partnermatchingbackend.common.ResultUtils;
 import com.xiaoxu.partnermatchingbackend.exception.BusinessException;
 import com.xiaoxu.partnermatchingbackend.model.domain.Team;
 import com.xiaoxu.partnermatchingbackend.model.domain.User;
+import com.xiaoxu.partnermatchingbackend.model.domain.UserTeam;
 import com.xiaoxu.partnermatchingbackend.model.dto.TeamQuery;
 import com.xiaoxu.partnermatchingbackend.model.request.TeamAddRequest;
 import com.xiaoxu.partnermatchingbackend.model.request.TeamJoinRequest;
@@ -16,12 +17,16 @@ import com.xiaoxu.partnermatchingbackend.model.request.TeamUpdateRequest;
 import com.xiaoxu.partnermatchingbackend.model.vo.TeamUserVO;
 import com.xiaoxu.partnermatchingbackend.service.TeamService;
 import com.xiaoxu.partnermatchingbackend.service.UserService;
+import com.xiaoxu.partnermatchingbackend.service.UserTeamService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/team")
@@ -33,6 +38,8 @@ public class TeamController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private UserTeamService userTeamService;
 
     @PostMapping("/add")
     public BaseResponse<Long> addTeam(@RequestBody TeamAddRequest teamAddRequest, HttpServletRequest request) {
@@ -61,7 +68,7 @@ public class TeamController {
     }
 
     @GetMapping("/get")
-    public BaseResponse<Team> getTeamById(@RequestBody long id) {
+    public BaseResponse<Team> getTeamById(long id) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
 
@@ -84,6 +91,7 @@ public class TeamController {
         return ResultUtils.success(teamList);
     }
 
+    // todo  查询分页
     @GetMapping("/list/page")
     public BaseResponse<Page<Team>> listPageTeams(TeamQuery teamQuery) {
         if (teamQuery == null) {
@@ -131,5 +139,56 @@ public class TeamController {
         }
         return ResultUtils.success(true);
     }
+
+    /**
+     * 获取我创建的队伍
+     *
+     * @param teamQuery
+     * @param request
+     * @return
+     */
+    @GetMapping("/list/my/create")
+    public BaseResponse<List<TeamUserVO>> listMyCreateTeams(TeamQuery teamQuery, HttpServletRequest request) {
+        if (teamQuery == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        teamQuery.setUserId(loginUser.getId());
+        List<TeamUserVO> teamList = teamService.listTeams(teamQuery, true);
+        return ResultUtils.success(teamList);
+    }
+
+    /**
+     * 获取我加入的队伍
+     *
+     * @param teamQuery
+     * @param request
+     * @return
+     */
+    @GetMapping("/list/my/join")
+    public BaseResponse<List<TeamUserVO>> listMyJoinTeams(TeamQuery teamQuery, HttpServletRequest request) {
+        if (teamQuery == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        QueryWrapper<UserTeam> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("userId", loginUser.getId());
+        List<UserTeam> userTeamList = userTeamService.list(queryWrapper);
+        //取出不重复的队伍 id
+        //teamId userId
+        //1,  2
+        //1,  3
+        //2,  3
+        //result
+        //1 => 2 , 3
+        //2 => 3
+        Map<Long, List<UserTeam>> listMap = userTeamList.stream()
+                .collect(Collectors.groupingBy(UserTeam::getUserId));
+        ArrayList<Long> idList = new ArrayList<>(listMap.keySet());
+        teamQuery.setIdList(idList);
+        List<TeamUserVO> teamList = teamService.listTeams(teamQuery, true);
+        return ResultUtils.success(teamList);
+    }
+
 
 }
