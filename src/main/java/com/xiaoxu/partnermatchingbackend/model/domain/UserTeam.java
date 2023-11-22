@@ -1,16 +1,20 @@
 package com.xiaoxu.partnermatchingbackend.model.domain;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 用户队伍关系
+ *
  * @TableName user_team
  */
-@TableName(value ="user_team")
+@TableName(value = "user_team")
 @Data
 public class UserTeam implements Serializable {
     /**

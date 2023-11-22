@@ -3,6 +3,7 @@ package com.xiaoxu.partnermatchingbackend.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaoxu.partnermatchingbackend.common.BaseResponse;
+import com.xiaoxu.partnermatchingbackend.common.DeleteRequest;
 import com.xiaoxu.partnermatchingbackend.common.ErrorCode;
 import com.xiaoxu.partnermatchingbackend.common.ResultUtils;
 import com.xiaoxu.partnermatchingbackend.exception.BusinessException;
@@ -128,10 +129,11 @@ public class TeamController {
     }
 
     @PostMapping("/delete")
-    public BaseResponse<Boolean> deleteTeam(@RequestBody long id, HttpServletRequest request) {
-        if (id <= 0) {
+    public BaseResponse<Boolean> deleteTeam(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
+        if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+        long id = deleteRequest.getId();
         User loginUser = userService.getLoginUser(request);
         boolean result = teamService.deleteTeam(id, loginUser);
         if (!result) {

@@ -26,7 +26,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.xiaoxu.partnermatchingbackend.constant.UserConstant.ADMIN_ROLE;
 import static com.xiaoxu.partnermatchingbackend.constant.UserConstant.USER_LOGIN_STATE;
 
 

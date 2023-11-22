@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * @author: xiaoxu
- * @Description:    导入Excel，读取数据
+ * @Description: 导入Excel，读取数据
  */
 public class ImportExcel {
     /**
@@ -21,8 +21,10 @@ public class ImportExcel {
         synchronousRead(fileName);
 
     }
+
     /**
      * 监听器读取
+     *
      * @param fileName
      */
     public static void readByListener(String fileName) {

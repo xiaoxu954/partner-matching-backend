@@ -365,7 +365,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         Team team = getTeamById(id);
         long teamId = team.getId();
         // 校验你是不是队伍的队长
-        if (loginUser.getId() != team.getUserId()) {
+        if (!loginUser.getId().equals(team.getUserId())) {
 
             throw new BusinessException(ErrorCode.NO_AUTH, "无访问权限");
         }
@@ -410,8 +410,3 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
     }
 
 }
-
-
-
-
-

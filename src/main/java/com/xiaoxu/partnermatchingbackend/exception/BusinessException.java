@@ -6,7 +6,7 @@ import com.xiaoxu.partnermatchingbackend.common.ErrorCode;
 /**
  * 自定义异常类
  */
-public class BusinessException extends RuntimeException{
+public class BusinessException extends RuntimeException {
     private final int code;
     private final String description;
 

@@ -1,22 +1,14 @@
 package com.xiaoxu.partnermatchingbackend.once;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
-import com.xiaoxu.partnermatchingbackend.mapper.UserMapper;
 import com.xiaoxu.partnermatchingbackend.model.domain.User;
 import com.xiaoxu.partnermatchingbackend.service.UserService;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StopWatch;
 
 import javax.annotation.Resource;
-
-import static com.fasterxml.jackson.databind.type.LogicalType.Collection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class InsertUsers {

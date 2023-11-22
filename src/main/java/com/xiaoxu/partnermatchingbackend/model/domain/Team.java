@@ -1,16 +1,17 @@
 package com.xiaoxu.partnermatchingbackend.model.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 队伍
+ *
  * @TableName team
  */
-@TableName(value ="team")
+@TableName(value = "team")
 @Data
 public class Team implements Serializable {
     /**

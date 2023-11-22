@@ -3,7 +3,6 @@ package com.xiaoxu.partnermatchingbackend.model.request;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 用户加入队伍请求体
