@@ -104,7 +104,9 @@ public class TeamController {
                 team.setHasJoin(hasJoin);
             });
         } catch (Exception e) {
+
         }
+        //todo 查询加入队伍的人数
         return ResultUtils.success(teamList);
     }
 

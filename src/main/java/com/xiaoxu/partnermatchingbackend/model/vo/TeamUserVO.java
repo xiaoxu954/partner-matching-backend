@@ -67,6 +67,7 @@ public class TeamUserVO implements Serializable {
      * 创建人用户信息
      */
     private UserVO createUser;
+//    todo 展示已加入队伍人数
     /**
      * 已加入的用户数
      */

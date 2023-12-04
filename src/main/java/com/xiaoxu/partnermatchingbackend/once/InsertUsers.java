@@ -1,5 +1,6 @@
 package com.xiaoxu.partnermatchingbackend.once;
 
+
 import com.xiaoxu.partnermatchingbackend.model.domain.User;
 import com.xiaoxu.partnermatchingbackend.service.UserService;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,6 @@ public class InsertUsers {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         List<User> userList = new ArrayList<>();
-
         final int INSERTNUM = 1000;
         for (int i = 0; i < INSERTNUM; i++) {
             User user = new User();
@@ -84,16 +84,15 @@ public class InsertUsers {
                 System.out.println("threadName:" + Thread.currentThread().getName());
                 userService.saveBatch(userList, batchSize);
             });
-
             futureList.add(future);
         }
         CompletableFuture.allOf(futureList.toArray(new CompletableFuture[]{})).join();
-
         stopWatch.stop();
         System.out.println(stopWatch.getTotalTimeMillis());
     }
 
     public static void main(String[] args) {
         new InsertUsers().doInsertUser();
+//        new InsertUsers().doConcurrencyInsertUser();
     }
 }

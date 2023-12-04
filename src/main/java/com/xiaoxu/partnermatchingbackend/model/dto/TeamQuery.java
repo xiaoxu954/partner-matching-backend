@@ -14,6 +14,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class TeamQuery extends PageRequest {
+    private static final long serialVersionUID = -3102438306695328986L;
     /**
      * id
      */
