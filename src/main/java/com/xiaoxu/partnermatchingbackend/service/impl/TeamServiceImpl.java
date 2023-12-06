@@ -191,8 +191,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
 
         List<TeamUserVO> teamUserVOList = new ArrayList<>();
         // 关联查询创建人的用户信息
-        for (
-                Team team : teamList) {
+        for (Team team : teamList) {
             Long userId = team.getUserId();
             if (userId == null) {
                 continue;
